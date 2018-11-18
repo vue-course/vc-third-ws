@@ -1,4 +1,4 @@
-# js-fuzeday-2018-starter-kit
+# third course workshop on vuex and testing 
 
 ## Project setup
 ```
