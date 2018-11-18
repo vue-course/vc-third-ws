@@ -65,14 +65,14 @@ const editTaskAction = (context, payload) => context.commit('editTask', payload)
 export default {
     state: initailState,
     mutations: {
-        fetchStages,
+        fetchBoards,
         addStage,
         fetchTasks,
         addTask,
         editTask
     },
     actions: {
-        fetchStagesAction: fetchStages,
+        fetchBoardsAction: fetchBoardsAction,
         addStageAction: addStage,
         fetchTasks: fetchTasksAction,
         addTask: addTaskAction,
