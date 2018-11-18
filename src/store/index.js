@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import boards from "./modules/boards/boards.module";
+import boards from "./modules/boards";
 
 Vue.use(Vuex);
 
