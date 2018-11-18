@@ -1,3 +1,6 @@
+import { BoardsService } from "../../../services/boards-service";
+const boardService = new BoardsService();
+
 let initailState = [{
     id: 1,
     stages: [ {
@@ -14,12 +17,15 @@ let initailState = [{
     }]
 }];
 
-const fetchStages = (state, payload) => {
+const fetchBoards = (state, payload) => {
     state = payload;
     return state;
 };
 
-const fetchStagesAction = (context, payload) => context.commit('fetchStages', payload);
+const fetchBoardsAction = (context) => {
+    const boards = boardService.getBoards()
+        .then(boards =>  context.commit('fetchBoards', boards));
+};
 
 const addStage = (state, payload) => {
     let newStage = {
