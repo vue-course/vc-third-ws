@@ -6,7 +6,7 @@
 		</div>
 
 		<div class="boards-list">
-			<router-link v-for="board in boards" :to="{name: 'board', params: {id: board.id}}"
+			<router-link v-for="board in getBoards" :to="{name: 'board', params: {id: board.id}}"
 			             class="board-item">
 				{{board.name}}
 			</router-link>
@@ -14,8 +14,9 @@
 	</div>
 </template>
 <script>
+    import { mapGetters } from "vuex";
 	import CreateBoardForm from "../components/CreateBoardForm";
-
+	// boards getter here
 	export default {
 		components: {CreateBoardForm},
 		data() {
@@ -23,6 +24,9 @@
 				boards: []
 			};
 		},
+        computed: {
+            ...mapGetters(["getBoards"])
+        },
 		mounted() {
 			this.getBoards();
 		},
