@@ -2,7 +2,7 @@
 	<div class="boards">
 		<div>
 			<h3>Add Board:</h3>
-			<CreateBoardForm @update="fetchBoards"></CreateBoardForm>
+			<CreateBoardForm @submit="saveBoard" :board="newBoard"></CreateBoardForm>
 		</div>
 
 		<div class="boards-list">
@@ -21,6 +21,9 @@
 
 	export default {
 		components: {CreateBoardForm},
+		data() {
+			return {newBoard: {name: ''}};
+		},
 		computed: {
 			...mapGetters({
 				boards: GETTERS.BOARDS
@@ -31,8 +34,12 @@
 		},
 		methods: {
 			...mapActions({
-				fetchBoards: ACTIONS.FETCH_BOARDS
-			})
+				fetchBoards: ACTIONS.FETCH_BOARDS,
+				setBoard: ACTIONS.SET_BOARD,
+			}),
+			saveBoard(board) {
+				return this.setBoard(board).then(() => this.newBoard = {name: ''});
+			}
 		}
 	};
 </script>

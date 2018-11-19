@@ -1,6 +1,6 @@
 <template>
 	<form @submit.prevent="save">
-		<input type="text" v-model="name">
+		<input type="text" :value="board.name" @input="updatedName = $event.target.value">
 		<button type="submit">Save</button>
 	</form>
 </template>
@@ -9,15 +9,18 @@
 
 	export default {
 		name: 'CreateBoardForm',
+		props: {
+			board: Object
+		},
 		data() {
-			return {name: ''};
+			return {updatedName: ''};
 		},
 		methods: {
 			save() {
-				return this.$boards
-					.setBoard({name: this.name})
-					.then((board) => this.$emit('update', board))
-					.then(() => this.name = '');
+				this.$emit('submit', {
+					...this.board,
+					name: this.updatedName
+				});
 			}
 		}
 	}
