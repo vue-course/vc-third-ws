@@ -18,14 +18,10 @@
 		},
 		methods: {
 			updateStage(stage) {
-				this.$boards
-					.setStage(stage)
-					.then(() => this.$emit('update-stage', this.stage));
+				this.$emit('update-stage', stage)
 			},
 			updateTask(task) {
-				this.$boards
-					.setTask(task)
-					.then(() => this.$emit('update-task', task));
+				this.$emit('update-task', task);
 			}
 		}
 	}

@@ -5,7 +5,10 @@
 	</div>
 </template>
 <script>
+	import {mapGetters, mapActions} from 'vuex';
 	import TaskEditor from '../components/TaskEditor.vue';
+	import {ACTIONS} from "../store/modules/stages/stages.actions";
+	import {GETTERS} from "../store/modules/stages/stages.getters";
 
 	export default {
 		components: {
@@ -14,35 +17,27 @@
 		data() {
 			return {
 				loading: true,
-				task: {},
-				stages: []
 			};
 		},
 		mounted() {
-			this.getData();
+			this.fetchTask(this.$route.params.id)
+				.then(() => this.loading = false);
 		},
-		beforeRouteUpdate() {
-			this.getData();
+		computed: {
+			...mapGetters({
+				task: GETTERS.CURRENT_TASK,
+				stages: GETTERS.STAGES
+			})
 		},
 		methods: {
+			...mapActions({
+				fetchTask: ACTIONS.FETCH_TASK,
+				setTask: ACTIONS.SET_TASK
+			}),
 			addTask(task) {
-				return this.$boards
-					.setTask(task)
-					.then(() => this.$router.push({name: 'board', params: {id: this.task.board}}));
+				return this.setTask(task)
+					.then(() => this.$router.push({name: 'board', params: {id: task.board}}));
 			},
-			getData() {
-				this.getTaskData()
-					.then(() => this.$boards.getStages(this.task.board))
-					.then(stages => this.stages = stages)
-					.then(() => this.loading = false);
-			},
-			getTaskData() {
-				if (this.$route.params.id === 'new') {
-					this.task = {title: 'add new task', stage: this.stages[0].id, board: this.stages[0].board};
-				} else {
-					return this.$boards.getTask(this.$route.params.id).then(task => this.task = task);
-				}
-			}
 		}
 	};
 </script>

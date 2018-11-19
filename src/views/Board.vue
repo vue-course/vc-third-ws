@@ -5,12 +5,15 @@
 			<div>Add new task:&nbsp; </div>
 			<TaskEditor :task="newTask" :stages="stages" @update="addTask"></TaskEditor>
 		</div>
-		<BoardStages :stages="stages" :board="$route.params.id" @update-stage="stageUpdated" @update-task="taskUpdated"></BoardStages>
+		<BoardStages />
 	</div>
 </template>
 <script>
+	import {mapGetters, mapActions} from 'vuex';
 	import TaskEditor from '../components/TaskEditor.vue';
 	import BoardStages from '../components/BoardStages.vue';
+	import {GETTERS} from "../store/modules/stages/stages.getters";
+	import {ACTIONS} from "../store/modules/stages/stages.actions";
 
 	export default {
 		components: {
@@ -20,36 +23,33 @@
 		data() {
 			return {
 				newTask: {title: ''},
-				stages: []
 			};
 		},
-		mounted() {
-			this.updateData();
+		computed: {
+			...mapGetters({
+				stages: GETTERS.STAGES
+			})
 		},
-		beforeRouteUpdate() {
-			this.updateData();
+		created() {
+			this.fetchStages(this.$route.params.id)
+				.then(() => this.setDefaultStageForTask());
 		},
 		methods: {
+			...mapActions({
+				fetchStages: ACTIONS.FETCH_STAGES,
+				setTask: ACTIONS.SET_TASK,
+			}),
 			addTask(task) {
 				if(!this.stages.length) {
 					return alert('Please add stages first');
 				}
-				this.$boards
-					.setTask(task)
-					.then(() => this.newTask = {})
-					.then(() => this.updateData());
+				this.setTask(task)
+					.then(() => this.setDefaultStageForTask());
 			},
-			stageUpdated() {
-				this.updateData();
-			},
-			taskUpdated() {
-				this.updateData();
-			},
-			updateData() {
-				this.$boards
-					.getStages(this.$route.params.id)
-					.then(stages => this.stages = stages)
-					.then(() => this.stages.length && (this.newTask = {title: '', stage: this.stages[0].id, board: this.stages[0].board}))
+			setDefaultStageForTask() {
+				if(this.stages.length) {
+					this.newTask = {title: '', stage: this.stages[0].id, board: this.stages[0].board};
+				}
 			}
 		}
 	};

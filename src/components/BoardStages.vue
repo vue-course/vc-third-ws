@@ -1,13 +1,13 @@
 <template>
 	<div class="board-stages">
 		<h2>Board Stages</h2>
-		<StageEditor :stage="newStage" @update="stagesUpdated"></StageEditor>
+		<StageEditor :stage="newStage" @update="createStage"></StageEditor>
 		<div class="stages-list">
 			<Stage v-for="stage in stages"
+			       @update-stage="setStage"
+			       @update-task="setTask"
 			       :key="stage.id"
 			       :stage="stage"
-			       @update-stage="existingStagesUpdated"
-			       @update-task="existingTaskUpdated"
 			></Stage>
 		</div>
 	</div>
@@ -15,35 +15,33 @@
 
 <script>
 	import Stage from "./Stage.vue";
+	import {mapGetters, mapActions} from 'vuex';
 	import StageEditor from "./StageEditor";
+	import {GETTERS} from "../store/modules/stages/stages.getters";
+	import {ACTIONS} from "../store/modules/stages/stages.actions";
+
 
 	export default {
 		name: 'BoardStages',
 		components: {StageEditor, Stage},
-		props: {
-			stages: Array,
-			board: String,
-		},
 		data() {
 			return {
 				newStage: {name: 'New Stage'}
 			};
 		},
+		computed: {
+			...mapGetters({
+				stages: GETTERS.STAGES
+			})
+		},
 		methods: {
-			stagesUpdated(newStage) {
-				newStage.board = this.board;
-				this.newStage = {name: 'New Stage', board: this.board};
-
-				this.$boards.setStage(newStage).then(stage => {
-					this.stages.push(stage);
-					this.$emit('update-stage', stage);
-				});
-			},
-			existingStagesUpdated(updatedStage) {
-				this.$emit('update-stage', updatedStage);
-			},
-			existingTaskUpdated(updatedTask) {
-				this.$emit('update-task', updatedTask);
+			...mapActions({
+				setStage: ACTIONS.SET_STAGE,
+				setTask: ACTIONS.SET_TASK,
+			}),
+			createStage(newStage) {
+				this.setStage(newStage);
+				this.newStage = {name: 'New Stage'};
 			}
 		}
 	}
