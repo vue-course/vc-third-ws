@@ -17,6 +17,6 @@ export const actions = {
 	[ACTIONS.SET_BOARD]: (context, board) => {
 		return boardService
 			.setBoard(board)
-			.then(context.dispatch(ACTIONS.FETCH_BOARDS));
+			.then(() => context.dispatch(ACTIONS.FETCH_BOARDS));
 	}
 };
