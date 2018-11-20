@@ -32,4 +32,22 @@ describe('StageEditor.vue', () => {
 		expect(wrapper.contains('form')).toBeTruthy();
 	});
 
+
+	it('trigger submit', () => {
+		const stage = {name: 'test'};
+		const wrapper = shallowMount(StageEditor, {
+			propsData: {stage}
+		});
+
+		const text = 'new textadfdsfdsfds';
+		wrapper.find('input').element.value = text;
+		wrapper.find('input').trigger('input');
+		wrapper.find('form').trigger('submit');
+
+		expect(wrapper.emitted('update')).toBeTruthy();
+		expect(wrapper.emitted('update')[0][0]).toEqual({
+			name: text
+		});
+	});
+
 });
